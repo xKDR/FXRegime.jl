@@ -8,15 +8,30 @@ on:
     pull_request:
         branches:
             - main
-    # can add tags if needed
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
     build:
         runs-on: ubuntu-latest
+        timeout-minutes: 30
+        permissions:
+            actions: write     # julia-actions/cache pruning its own caches
+            contents: write    # deploydocs pushes the built site to gh-pages
+            statuses: write
         steps:
-            - uses: actions/checkout@v2
-            - uses: julia-actions/cache@v1
-            - uses: julia-actions/julia-buildpkg@latest
-            - uses: julia-actions/julia-docdeploy@latest
+            - uses: actions/checkout@v6
+            # Without this the runner has no Julia at all and julia-buildpkg fails
+            # before it can do anything.
+            - uses: julia-actions/setup-julia@v3
+              with:
+                version: '1'
+            - uses: julia-actions/cache@v2
+            - uses: julia-actions/julia-buildpkg@v1
+            - uses: julia-actions/julia-docdeploy@v1
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
