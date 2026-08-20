@@ -22,16 +22,18 @@ jobs:
             contents: read
         strategy:
             fail-fast: false
+            # Explicit combinations rather than a product with excludes: macos-latest runners are
+            # Apple Silicon, so they need aarch64 — asking for x64 there fails outright in
+            # julia-actions/setup-julia@v3. Linux carries the version sweep (LTS per Project.toml
+            # compat, current release, prerelease); Windows and macOS check the current release
+            # only, to keep the matrix affordable.
             matrix:
-                version: ['1.10', '1', 'pre']   # LTS (see Project.toml compat), current release, prerelease
-                os: [ubuntu-latest, windows-latest, macos-latest]
-                arch: [x64]
-                exclude:
-                    # keep the matrix affordable: only the current release on non-Linux
-                    - {os: windows-latest, version: '1.10'}
-                    - {os: windows-latest, version: 'pre'}
-                    - {os: macos-latest, version: '1.10'}
-                    - {os: macos-latest, version: 'pre'}
+                include:
+                    - {os: ubuntu-latest,  version: '1.10', arch: x64}
+                    - {os: ubuntu-latest,  version: '1',    arch: x64}
+                    - {os: ubuntu-latest,  version: 'pre',  arch: x64}
+                    - {os: windows-latest, version: '1',    arch: x64}
+                    - {os: macos-latest,   version: '1',    arch: aarch64}
         steps:
             - uses: actions/checkout@v6
             - uses: julia-actions/setup-julia@v3
