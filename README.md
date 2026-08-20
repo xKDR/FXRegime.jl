@@ -12,7 +12,12 @@ FXRegime.jl is a port of the R package
 [**fxregime**](https://CRAN.R-project.org/package=fxregime) by Achim Zeileis, Ajay Shah and
 Ila Patnaik, together with the parts of
 [**strucchange**](https://CRAN.R-project.org/package=strucchange) it depends on. The test
-suite asserts numerical agreement with R, fixture by fixture.
+suite asserts numerical agreement with R, fixture by fixture — 1592 assertions against 90
+committed R fixtures.
+
+Dating the four regimes of the Chinese yuan from 1014 daily observations takes **0.056 s**
+here against **161 s** in R, for identical breakdates. Both run the same O(n²) algorithm; see
+[Performance](#performance) for where the difference actually comes from.
 
 ---
 
@@ -25,9 +30,11 @@ suite asserts numerical agreement with R, fixture by fixture.
 - [Installation](#installation)
 - [Worked example: the Chinese yuan, 2005–2009](#worked-example-the-chinese-yuan-20052009)
 - [Relation to the R package](#relation-to-the-r-package)
+- [Performance](#performance)
 - [Tests and R fixtures](#tests-and-r-fixtures)
 - [Data](#data)
 - [Citation](#citation)
+- [License](#license)
 
 ---
 
