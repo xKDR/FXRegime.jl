@@ -232,7 +232,7 @@ or in the Pkg REPL mode (`]`):
 add https://github.com/xKDR/FXRegime.jl.git
 ```
 
-Julia 1.9 or later. The only non-stdlib dependency is
+Julia 1.10 or later. The only non-stdlib dependency is
 [Distributions.jl](https://github.com/JuliaStats/Distributions.jl); there is no plotting
 dependency and no R is required at runtime.
 
@@ -789,8 +789,8 @@ line-by-line translations of the R and LINPACK sources — `dqrdc2`, `pargmaxV`,
 dynamic program. That makes this a derivative work, and MIT redistribution of GPL-derived code
 would be a licence violation.
 
-The intended resolution is to obtain the upstream authors' agreement to release the ported
-portions under MIT; Ila Patnaik, a co-author of **fxregime**, is also an author here. Until
+The intended resolution is to obtain the agreement of the upstream copyright holders — Achim
+Zeileis, Ajay Shah and Ila Patnaik — to release the ported portions under MIT. Until
 that agreement is in writing, the licence stated above is provisional, and the alternative —
 if permission is not forthcoming — is to relicense this package GPL-2 | GPL-3 to match
 upstream. Publishing it or registering it in the Julia General registry under MIT before then
