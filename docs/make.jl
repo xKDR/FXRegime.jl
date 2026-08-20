@@ -6,11 +6,12 @@ DocMeta.setdocmeta!(FXRegime, :DocTestSetup, :(using FXRegime); recursive=true)
 makedocs(;
     modules=[FXRegime],
     authors="xKDR Forum",
-    repo="https://github.com/xKDR/FXRegime.jl/blob/{commit}{path}#{line}",
-    sitename="$FXRegime.jl",
+    repo=Remotes.GitHub("xKDR", "FXRegime.jl"),
+    sitename="FXRegime.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://xKDR.github.io/FXRegime.jl",
+        edit_link="main",
         assets=String[],
     ),
     pages=[

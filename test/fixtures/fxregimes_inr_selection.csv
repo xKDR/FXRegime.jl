@@ -1,0 +1,9 @@
+statistic,value
+nobs,770
+npar,6
+h,20
+maxbreaks,10
+m_selected_BIC,6
+m_selected_LWZ,3
+m_default,3
+objective_default,409.20429391608127

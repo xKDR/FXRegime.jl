@@ -7,3 +7,5 @@
 /docs/Manifest.toml
 /docs/build/
 /test/Manifest.toml
+/bench/Manifest*.toml
+/bench/results_*.csv
