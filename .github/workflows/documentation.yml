@@ -23,7 +23,7 @@ jobs:
             contents: write    # deploydocs pushes the built site to gh-pages
             statuses: write
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
             # Without this the runner has no Julia at all and julia-buildpkg fails
             # before it can do anything.
             - uses: julia-actions/setup-julia@v3
