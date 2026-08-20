@@ -103,6 +103,7 @@ for (n in c(250, 500, 1000)) {
 
 res <- do.call(rbind, rows)
 write.csv(res, out, row.names = FALSE)
-cat("\nR", getRversion(), "fxregime", as.character(packageVersion("fxregime")),
+cat("\nR", as.character(getRversion()),
+    "fxregime", as.character(packageVersion("fxregime")),
     "strucchange", as.character(packageVersion("strucchange")), "\n")
 cat("wrote", out, "\n")

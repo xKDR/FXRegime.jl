@@ -634,6 +634,49 @@ Honestly and in full:
   is a `Date`-indexed matrix with `NaN` for missing, not a general irregular time series
   type; merging, `aggregate` at other frequencies, and so on are out of scope.
 
+## Performance
+
+Both implementations run the **same** algorithm: the RSS triangle is built from recursive
+residuals in O(n²), and the segmentation is the same Bellman recursion. `fxregimes()` is called
+the way the vignettes call it, without `fit` or `objfun`, so R's `gbreakpoints()` takes its fast
+path through `strucchange::breakpoints()` rather than the "*really* slow" double loop its own
+comments warn about. Nothing below is an algorithmic win — it is all constant factor.
+
+Reproduce with `julia --project=bench bench/benchmarks.jl`, `Rscript bench/benchmarks.R`, then
+`julia --project=bench bench/compare.jl`. Medians after warm-up; Julia with 8 threads.
+
+| task | dataset | n | Julia | R | speed-up |
+|---|---|---:|---:|---:|---:|
+| `fxreturns` | CNY daily | 1014 | 0.0004 s | 0.0060 s | 13× |
+| `fxlm` | CNY daily | 1014 | 0.00002 s | 0.0020 s | 69× |
+| `recresid` | CNY daily | 1014 | 0.0001 s | 0.0320 s | 365× |
+| `rss_triangle` | CNY daily | 1014 | 0.0266 s | 13.4 s | 503× |
+| **`fxregimes`** | **CNY daily** | **1014** | **0.056 s** | **161.5 s** | **2872×** |
+| `fxregimes` | INR weekly | 770 | 0.028 s | 59.8 s | 2143× |
+| `confint` | CNY daily | 1014 | 0.0002 s | 0.214 s | 919× |
+
+Scaling in `n` (INR daily, `h = 20`, `breaks = 10`):
+
+| n | Julia | R |
+|---:|---:|---:|
+| 250 | 0.0022 s | 1.56 s |
+| 500 | 0.0125 s | 13.3 s |
+| 1000 | 0.0629 s | 150.1 s |
+| 2000 | 0.285 s | — |
+| 3000 | 0.790 s | — |
+
+The interesting part is *where* the gap comes from. Isolating the two stages at n = 1014: the
+RSS triangle is 503× faster here, but the full dating is 2872×. So the triangle accounts for
+only 8% of R's runtime (13.4 s of 161.5 s) and 47% of Julia's — the remaining ~148 s of R's
+time is the dynamic program itself. `extend.obj.table()` addresses its accumulator by
+**character row name** (`my.obj.table[as.character(j), 2]`) inside a triply nested loop, so
+every one of the ~n²·m/2 inner steps pays for an integer→string conversion and a hash lookup.
+That, not the regression algebra, is what makes the R implementation slow.
+
+The practical consequence: daily data over long samples is affordable here. The published
+analyses use weekly returns partly to keep the dating tractable — the INR vignette says as much
+— and that constraint is largely lifted.
+
 ## Tests and R fixtures
 
 The test suite compares against R numerically, but does **not** need R to run: every reference
